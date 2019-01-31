@@ -58,6 +58,26 @@ fn if_then_else(r: &mut Vec<String>, a: &Vec<bool>, b: &Vec<i32>, c: &Vec<i32>) 
     nary_op!(r String, ite, a, b, c)
 }
 
+#[allow(dead_code)]
+macro_rules! compose12 {
+    ($t:ident, $f:expr, $g1:expr , $g2:expr, $($arg:expr)*) => {
+        let a1 = $g1($(&$arg),+);
+        let a2 = $g2($(&$arg),+);
+        let mut t = $f(&a1, &a2);
+        println!("t = {}", t);
+    };
+}
+
+#[allow(dead_code)]
+macro_rules! compose12mut {
+    ($t:ident, $f:expr, $g1:expr , $g2:expr, $($arg:expr)*) => {
+        let a1 = $g1($(&$arg),+);
+        let a2 = $g2($(&$arg),+);
+        $t = $f(&a1, &a2);
+        println!("t = {}", $t);
+    };
+}
+
 fn main() {
     let a = vec![1, 2, 3];
     let b = vec![4, 5, 6];
@@ -80,4 +100,16 @@ fn main() {
     let mut r: Vec<i32> = vec![];
     vect_sum(&mut r, &a, &b);
     println!("[{} {} {}]", r[0], r[1], r[2]);
+
+    fn sum2(a: &i32, b: &i32) -> i32 {
+        *a * *a + *b * *b
+    }
+
+    let mut t = 0;
+
+    compose12mut!(t, sum, sum, sum2, 1 2);
+    println!("t = {}", t);
+
+    compose12!(t, sum, sum, sum2, 2 3);
+    println!("t = {}", t);
 }
