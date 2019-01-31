@@ -1,0 +1,7 @@
+[package]
+name = "ebola"
+version = "0.1.0"
+authors = ["Evgenii <evgeniy@nspcc.ru>"]
+edition = "2018"
+
+[dependencies]
