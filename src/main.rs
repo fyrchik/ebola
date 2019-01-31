@@ -25,7 +25,7 @@ macro_rules! nary_op {
 
 #[allow(dead_code)]
 macro_rules! vectorize {
-    ($r:ident $t:ty, $op:expr, $name:ident $res:ty $(, $narg:ident $arg:ty)*) => {
+    ($r:ident, $op:expr, $name:ident $res:ty $(, $narg:ident $arg:ty)*) => {
         #[allow(dead_code)]
         fn $r($name: &mut Vec<$res> $(, $narg: &Vec<$arg>)*) {
             $name.truncate(0);
@@ -75,7 +75,7 @@ fn main() {
     fn sum(a: &i32, b: &i32) -> i32 {
         return *a + *b;
     }
-    vectorize!(vect_sum i32, sum, r i32, a i32, b i32);
+    vectorize!(vect_sum, sum, r i32, a i32, b i32);
 
     let mut r: Vec<i32> = vec![];
     vect_sum(&mut r, &a, &b);
