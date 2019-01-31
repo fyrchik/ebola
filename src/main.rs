@@ -15,7 +15,12 @@ macro_rules! nary_op_aux {
 // nary_op! macro is a n-ary zipWith
 #[allow(dead_code)]
 macro_rules! nary_op {
-    ($r:ident $t:ty, $op:expr, $v1:ident $(, $vs:ident)*) => {nary_op_aux!($r $t, $op, $v1.iter() $(, $vs)*);};
+    ($r:ident $t:ty, $op:expr, $v1:ident $(, $vs:ident)*) => {
+        {
+            $r.truncate(0);
+            nary_op_aux!($r $t, $op, $v1.iter() $(, $vs)*);
+        }
+    };
 }
 
 #[allow(dead_code)]
@@ -23,6 +28,7 @@ macro_rules! vectorize {
     ($r:ident $t:ty, $op:expr, $name:ident $res:ty $(, $narg:ident $arg:ty)*) => {
         #[allow(dead_code)]
         fn $r($name: &mut Vec<$res> $(, $narg: &Vec<$arg>)*) {
+            $name.truncate(0);
             nary_op!($name $res, $op $(, $narg)*);
         }
     }
