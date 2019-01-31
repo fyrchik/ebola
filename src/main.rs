@@ -12,8 +12,20 @@ macro_rules! nary_op_aux {
     };
 }
 
+// nary_op! macro is a n-ary zipWith
+#[allow(dead_code)]
 macro_rules! nary_op {
     ($r:ident $t:ty, $op:expr, $v1:ident $(, $vs:ident)*) => {nary_op_aux!($r $t, $op, $v1.iter() $(, $vs)*);};
+}
+
+#[allow(dead_code)]
+macro_rules! vectorize {
+    ($r:ident $t:ty, $op:expr, $name:ident $res:ty $(, $narg:ident $arg:ty)*) => {
+        #[allow(dead_code)]
+        fn $r($name: &mut Vec<$res> $(, $narg: &Vec<$arg>)*) {
+            nary_op!($name $res, $op $(, $narg)*);
+        }
+    }
 }
 
 #[allow(dead_code)]
@@ -52,5 +64,14 @@ fn main() {
 
     let mut r: Vec<String> = vec![];
     if_then_else(&mut r, &vec![true, false, true], &b, &c);
+    println!("[{} {} {}]", r[0], r[1], r[2]);
+
+    fn sum(a: &i32, b: &i32) -> i32 {
+        return *a + *b;
+    }
+    vectorize!(vect_sum i32, sum, r i32, a i32, b i32);
+
+    let mut r: Vec<i32> = vec![];
+    vect_sum(&mut r, &a, &b);
     println!("[{} {} {}]", r[0], r[1], r[2]);
 }
